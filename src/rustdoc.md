@@ -34,6 +34,34 @@ does is call the `main()` that's in this crate's `lib.rs`, though.)
 
 [bin]: https://github.com/rust-lang/rust/tree/master/src/tools/rustdoc
 
+## Fast builds (for tier 1 targets)
+
+Preconfigure your `/config.toml`:
+
+```toml
+# =============================================================================
+# Global Settings
+# =============================================================================
+
+#profile = <none>
+# make sure that you do not have a profile set
+
+# =============================================================================
+# Tweaking how LLVM is compiled
+# =============================================================================
+[llvm]
+
+# Note that many of the LLVM options are not currently supported for
+# downloading. Currently only the "assertions" option can be toggled.
+download-ci-llvm = true
+```
+
+Now build `rustdoc` from stage 2 and build the documentation of the standard library:
+
+```bash
+x.py doc std --stage 2 --open
+```
+
 ## Cheat sheet
 
 * Use `./x.py build` to make a usable
@@ -42,7 +70,7 @@ does is call the `main()` that's in this crate's `lib.rs`, though.)
   * If you've used `rustup toolchain link local /path/to/build/$TARGET/stage1`
     previously, then after the previous build command, `cargo +local doc` will
     Just Work.
-* Use `./x.py doc --stage 1 library/std` to use this rustdoc to generate the
+* Use `./x.py doc --stage 1 std` to use this rustdoc to generate the
   standard library docs.
   * The completed docs will be available in `build/$TARGET/doc/std`, though the
     bundle is meant to be used as though you would copy out the `doc` folder to
